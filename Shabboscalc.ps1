@@ -1,7 +1,7 @@
 # Current time
 $now = Get-Date
 
-# Location (Paramus, NJ)
+# Location (Teaneck, NJ)
 $lat = 40.889
 $lon = -74.01
 
