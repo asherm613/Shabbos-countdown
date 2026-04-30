@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Shabbos Countdown</title>
+    <style>
+        body {
+            background: #111;
+            color: #0f0;
+            font-family: Consolas, monospace;
+            text-align: center;
+            padding-top: 80px;
+            font-size: 28px;
+        }
+        #time {
+            font-size: 48px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Shabbos Countdown</h1>
+<div id="time">Loading…</div>
+
+<script>
+async function updateCountdown() {
+    const now = new Date();
+
+    // Teaneck coordinates
+    const lat = 40.889;
+    const lon = -74.01;
+
+    // Find next Friday
+    const day = now.getDay();
+    const daysUntilFriday = (5 - day + 7) % 7;
+    const friday = new Date(now);
+    friday.setDate(now.getDate() + daysUntilFriday);
+
+    const dateStr = friday.toISOString().split("T")[0];
+
+    // NOAA API
+    const url = `https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&date=${dateStr}&formatted=0`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    // Sunset in UTC
+    const sunsetUTC = new Date(data.results.sunset);
+
+    // Convert to local time
+    const sunsetLocal = new Date(sunsetUTC.toLocaleString("en-US", { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone }));
+
+    // Candle-lighting = sunset - 18 minutes
+    const candle = new Date(sunsetLocal.getTime() - 18 * 60000);
+
+    // Time difference
+    const diffMs = candle - now;
+
+    if (diffMs <= 0) {
+        document.getElementById("time").innerText = "Shabbos is now";
+        return;
+    }
+
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffMinutes = Math.floor((diffMs / (1000 * 60)) % 60);
+
+    document.getElementById("time").innerText =
+        `Shabbos in ${diffHours} hours and ${diffMinutes} minutes`;
+}
+
+// Update every second
+setInterval(updateCountdown, 1000);
+updateCountdown();
+</script>
+
+</body>
+</html>
