@@ -1,0 +1,42 @@
+# Current time
+$now = Get-Date
+
+# Location (Paramus, NJ)
+$lat = 40.889
+$lon = -74.01
+
+# Find next Friday
+$daysUntilFriday = (5 - [int]$now.DayOfWeek + 7) % 7
+$friday = $now.Date.AddDays($daysUntilFriday)
+
+# NOAA API (stable)
+$dateStr = $friday.ToString("yyyy-MM-dd")
+$url = "https://api.sunrise-sunset.org/json?lat=$lat&lng=$lon&date=$dateStr&formatted=0"
+
+$result = Invoke-RestMethod -Uri $url
+
+# Sunset in UTC
+$sunsetUTC = [DateTime]$result.results.sunset
+
+# Convert to local time
+$sunsetLocal = $sunsetUTC.ToLocalTime()
+
+# Candle-lighting = sunset - 18 minutes
+$candle = $sunsetLocal.AddMinutes(-18)
+
+# Time difference
+$diff = $candle - $now
+
+# If Shabbos already started
+if ($diff.TotalMinutes -le 0) {
+    Write-Host "Shabbos is now"
+    return
+}
+
+# Convert to hours + minutes
+$hours = [int]$diff.TotalHours
+$minutes = $diff.Minutes
+
+Write-Host "Shabbos in $hours hours and $minutes minutes"
+
+
