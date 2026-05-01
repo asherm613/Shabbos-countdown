@@ -1,33 +1,21 @@
 # Current time
 $now = Get-Date
 
-# Location (Teaneck, NJ)
-$lat = 40.889
-$lon = -74.01
+# Hebcal API for Teaneck (geonameid 5105262)
+$url = "https://www.hebcal.com/shabbat?cfg=json&geonameid=5105262&m=50"
 
-# Find next Friday
-$daysUntilFriday = (5 - [int]$now.DayOfWeek + 7) % 7
-$friday = $now.Date.AddDays($daysUntilFriday)
-
-# NOAA API (stable)
-$dateStr = $friday.ToString("yyyy-MM-dd")
-$url = "https://api.sunrise-sunset.org/json?lat=$lat&lng=$lon&date=$dateStr&formatted=0"
-
+# Fetch Shabbos times
 $result = Invoke-RestMethod -Uri $url
 
-# Sunset in UTC
-$sunsetUTC = [DateTime]$result.results.sunset
+# Find candle-lighting event
+$candleEvent = $result.items | Where-Object { $_.category -eq "candles" }
 
-# Convert to local time
-$sunsetLocal = $sunsetUTC.ToLocalTime()
-
-# Candle-lighting = sunset - 18 minutes
-$candle = $sunsetLocal.AddMinutes(-18)
+# Extract candle-lighting time
+$candle = [DateTime]$candleEvent.date
 
 # Time difference
 $diff = $candle - $now
 
-# If Shabbos already started
 if ($diff.TotalMinutes -le 0) {
     Write-Host "Shabbos is now"
     return
@@ -38,5 +26,3 @@ $hours = [int]$diff.TotalHours
 $minutes = $diff.Minutes
 
 Write-Host "Shabbos in $hours hours and $minutes minutes"
-
-
