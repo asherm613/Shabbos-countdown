@@ -6,7 +6,6 @@
 <title>LCARS Shabbos Countdown — USS Enterprise D</title>
 
 <style>
-  /* ---------- Base / Layout ---------- */
   :root{
     --bg-1:#03030a;
     --bg-2:#071026;
@@ -16,9 +15,9 @@
     --lcars-pink:#ff7fbf;
     --lcars-teal:#66e0d6;
     --panel-glow: 0 10px 40px rgba(111,168,255,0.06);
-    --safe-padding: 18px;
-    --rail-width: 240px;
-    --max-content-width: 1400px;
+    --safe-padding: 20px;
+    --rail-width: 260px;
+    --max-content-width: 1500px;
     --font-sans: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --font-mono: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
   }
@@ -33,13 +32,13 @@
     height:100%;
     display:grid;
     grid-template-columns: var(--rail-width) 1fr;
-    grid-template-rows: 120px 1fr 120px;
-    gap:18px;
+    grid-template-rows: 120px 1fr 140px;
+    gap:20px;
     box-sizing:border-box;
     position:relative;
   }
 
-  /* ---------- Top LCARS bar (Enterprise D style) ---------- */
+  /* Top bar */
   .topbar{
     grid-column:1 / span 2;
     display:flex;align-items:center;gap:18px;padding:18px;border-radius:12px;
@@ -48,66 +47,82 @@
     overflow:hidden;
   }
   .top-left-pill{
-    width:260px;height:84px;border-top-right-radius:48px;border-bottom-right-radius:48px;
+    width:300px;height:84px;border-top-right-radius:48px;border-bottom-right-radius:48px;
     background:linear-gradient(90deg,var(--lcars-orange),#ff8a3a);display:flex;align-items:center;justify-content:center;
-    color:#071428;font-weight:800;font-size:18px;
+    color:#071428;font-weight:900;font-size:18px;
     box-shadow:0 8px 30px rgba(255,155,74,0.08);
     flex-shrink:0;
   }
-  .top-title{font-weight:700;font-size:20px;color:var(--lcars-pink);letter-spacing:1px}
+  .top-title{font-weight:800;font-size:20px;color:var(--lcars-pink);letter-spacing:1px}
   .top-sub{font-size:13px;color:#bfc7d6;margin-left:8px}
 
-  /* ---------- Left rail (modules) ---------- */
+  /* Left rail */
   .left-rail{
     grid-row:2;
     padding:18px;display:flex;flex-direction:column;gap:18px;box-sizing:border-box;
+    min-width:0;
   }
   .rail-pill{
-    height:84px;border-radius:42px;background:var(--lcars-orange);display:flex;align-items:center;padding:12px 18px;color:#071428;font-weight:800;
+    height:84px;border-radius:42px;background:var(--lcars-orange);display:flex;align-items:center;padding:12px 18px;color:#071428;font-weight:900;
     box-shadow:0 8px 30px rgba(255,155,74,0.06);
   }
-  .rail-seg{height:56px;border-radius:28px;background:var(--lcars-pink);display:flex;align-items:center;padding:8px 14px;color:#071428;font-weight:800}
-  .rail-small{height:44px;border-radius:22px;background:var(--lcars-blue);display:flex;align-items:center;padding:6px 12px;color:#071428;font-weight:800}
+  .rail-seg{height:56px;border-radius:28px;background:var(--lcars-pink);display:flex;align-items:center;padding:8px 14px;color:#071428;font-weight:900}
+  .rail-small{height:44px;border-radius:22px;background:var(--lcars-blue);display:flex;align-items:center;padding:6px 12px;color:#071428;font-weight:900}
 
-  /* ---------- Main area ---------- */
+  /* Main area */
   .main{
     grid-row:2;
-    padding:18px;box-sizing:border-box;display:grid;grid-template-columns:1fr 420px;grid-template-rows:1fr 220px;gap:18px;overflow:hidden;
+    padding:18px;box-sizing:border-box;display:grid;grid-template-columns:1fr 460px;grid-template-rows:1fr 240px;gap:20px;overflow:hidden;
+    min-width:0;
   }
 
   .panel{
     background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-radius:14px;padding:20px;box-sizing:border-box;position:relative;overflow:hidden;
+    border-radius:14px;padding:28px;box-sizing:border-box;position:relative;overflow:hidden;
     box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    min-width:0;
   }
 
   /* big countdown */
   .countdown{
-    height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+    padding:8px;
   }
-  .label{font-size:14px;color:var(--lcars-gold);font-weight:800;letter-spacing:1px}
-  .big-time{font-family:var(--font-mono);font-size:84px;color:var(--lcars-blue);text-shadow:0 10px 40px rgba(111,168,255,0.06)}
-  .sub{font-size:16px;color:#cbd6e8}
+  .label{font-size:14px;color:var(--lcars-gold);font-weight:900;letter-spacing:1px}
+  /* make big-time responsive and avoid cutoff: use clamp and allow wrapping */
+  .big-time{
+    font-family:var(--font-mono);
+    font-size: clamp(40px, 7vw, 96px);
+    line-height:1;
+    color:var(--lcars-blue);
+    text-shadow:0 10px 40px rgba(111,168,255,0.06);
+    word-break:break-word;
+    padding:6px 12px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+    border-radius:8px;
+    min-width:0;
+  }
+  .sub{font-size:16px;color:#cbd6e8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 
   /* right column modules */
   .modules{display:flex;flex-direction:column;gap:18px;height:100%}
-  .module{padding:14px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02))}
+  .module{padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));min-width:0}
   .module h3{margin:0;font-size:13px;color:var(--lcars-pink);letter-spacing:1px}
-  .module .value{font-family:var(--font-mono);font-size:28px;color:var(--lcars-gold);margin-top:8px}
+  .module .value{font-family:var(--font-mono);font-size:28px;color:var(--lcars-gold);margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
   /* bottom row */
   .bottom{
     grid-column:1 / span 2;display:flex;gap:18px;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
-    box-sizing:border-box;align-items:center;justify-content:space-between;
+    box-sizing:border-box;align-items:center;justify-content:space-between;min-width:0;
   }
   .info{display:flex;gap:18px;align-items:center}
-  .mini{width:120px;height:64px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#071428}
+  .mini{width:140px;height:64px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#071428}
   .mini.lcars{background:var(--lcars-blue)}
   .mini.tng{background:var(--lcars-pink)}
-  .status{color:#cbd6e8;font-size:13px}
+  .status{color:#cbd6e8;font-size:13px;max-width:520px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
   /* buttons */
-  .btn{padding:10px 14px;border-radius:10px;background:var(--lcars-orange);color:#071428;font-weight:800;border:none;cursor:pointer;box-shadow:0 8px 24px rgba(255,155,74,0.06)}
+  .btn{padding:10px 14px;border-radius:10px;background:var(--lcars-orange);color:#071428;font-weight:900;border:none;cursor:pointer;box-shadow:0 8px 24px rgba(255,155,74,0.06)}
 
   /* small screens: scale content instead of cutting off */
   @media (max-width:1100px){
@@ -116,13 +131,17 @@
     .left-rail{display:flex;flex-direction:row;overflow:auto;padding:8px;height:auto}
     .main{grid-row:2;padding:12px;grid-template-columns:1fr;grid-template-rows:auto auto;gap:12px}
     .modules{flex-direction:row;overflow:auto}
-    .big-time{font-size:56px}
+    .big-time{font-size: clamp(28px, 10vw, 64px) }
   }
 
   /* ensure nothing is clipped by adding safe margins and scroll when needed */
   .stage, .main, .left-rail, .panel {min-width:0;min-height:0}
   .main {overflow:auto}
   .left-rail {overflow:auto}
+
+  /* subtle scanline */
+  @keyframes scan {0%{opacity:0}50%{opacity:0.12}100%{opacity:0}}
+  .scanline{position:absolute;left:0;right:0;height:2px;top:50%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.03),transparent);animation:scan 6s linear infinite;opacity:0.6;pointer-events:none}
 </style>
 </head>
 <body>
@@ -165,6 +184,7 @@
               </div>
             </div>
           </div>
+          <div class="scanline" aria-hidden="true"></div>
         </div>
 
         <!-- Right column -->
@@ -187,21 +207,21 @@
           <div class="info">
             <div class="mini lcars">LCARS</div>
             <div class="mini tng">TNG</div>
-            <div style="display:flex;flex-direction:column">
-              <div style="font-weight:700;color:var(--lcars-pink)" id="parshaName">—</div>
+            <div style="display:flex;flex-direction:column;min-width:0">
+              <div style="font-weight:900;color:var(--lcars-pink)" id="parshaName">—</div>
               <div class="status" id="statusText">Connecting to Hebcal • Geonameid 5105262</div>
             </div>
           </div>
 
           <div style="display:flex;align-items:center;gap:18px">
-            <div style="text-align:right">
+            <div style="text-align:right;min-width:120px">
               <div style="font-size:13px;color:#9fb3d9">HEBREW DATE</div>
-              <div style="font-weight:700;color:var(--lcars-gold)" id="hebrewDate">—</div>
+              <div style="font-weight:900;color:var(--lcars-gold)" id="hebrewDate">—</div>
             </div>
 
-            <div style="text-align:right">
+            <div style="text-align:right;min-width:140px">
               <div style="font-size:13px;color:#9fb3d9">STARDATE</div>
-              <div style="font-weight:700;color:var(--lcars-blue)" id="stardate">—</div>
+              <div style="font-weight:900;color:var(--lcars-blue)" id="stardate">—</div>
             </div>
           </div>
         </div>
@@ -218,7 +238,7 @@ const HEBCAL_URL = `https://www.hebcal.com/shabbat?cfg=json&geonameid=${GEOID}&m
 
 /* ---------- Utility ---------- */
 const pad = (n)=>n.toString().padStart(2,'0');
-const pad3 = (n)=>n.toString().padStart(3,'0');
+const pad4 = (n)=>n.toString().padStart(4,'0');
 function formatClock(d){ return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
 function formatHM(d){ return `${pad(d.getHours())}:${pad(d.getMinutes())}`; }
 
@@ -230,7 +250,7 @@ let havdalahDate = null;
 /* ---------- Hebcal fetch with daily cache ---------- */
 async function fetchHebcal(force=false){
   try{
-    const cached = localStorage.getItem('hebcal_cache_v2');
+    const cached = localStorage.getItem('hebcal_cache_v3');
     if(!force && cached){
       const obj = JSON.parse(cached);
       const cachedDate = new Date(obj.fetchedAt);
@@ -246,13 +266,13 @@ async function fetchHebcal(force=false){
     if(!resp.ok) throw new Error('Hebcal fetch failed');
     const data = await resp.json();
     hebData = data;
-    localStorage.setItem('hebcal_cache_v2', JSON.stringify({fetchedAt:new Date().toISOString(), data}));
+    localStorage.setItem('hebcal_cache_v3', JSON.stringify({fetchedAt:new Date().toISOString(), data}));
     applyHebcal(data);
     document.getElementById('statusText').innerText = 'Connected to Hebcal • Data refreshed daily';
   }catch(err){
     console.warn(err);
     document.getElementById('statusText').innerText = 'Hebcal unavailable — using cached data if present';
-    const cached = localStorage.getItem('hebcal_cache_v2');
+    const cached = localStorage.getItem('hebcal_cache_v3');
     if(cached){
       const obj = JSON.parse(cached);
       hebData = obj.data;
@@ -278,90 +298,44 @@ function applyHebcal(data){
   document.getElementById('hebrewDate').innerText = hebTitle || '—';
 }
 
-/* ---------- Stardate integration ----------
-   Attempt to load user's stardate script from their repo (raw). If it exists, use it.
-   Fallback: local TNG-like stardate approximation.
-   The loader is permissive: it won't break the page if the external file is missing.
+/* ---------- Stardate (PowerShell algorithm translated to JS) ----------
+   Original PowerShell logic:
+     base = (year - 1961) * 1000
+     sd = base + 1000 * ((doy + dayFraction) / 365)
+   We'll compute with fractional precision and format to 4 decimals.
 */
-const RAW_STARDATE_URL = 'https://raw.githubusercontent.com/asherm613/Shabbos-countdown/main/stardate.js';
+function computeStardateFromPowerShell(date = new Date()){
+  // Use UTC to match a consistent epoch behavior
+  const utc = new Date(date.getTime());
+  const year = utc.getUTCFullYear();
 
-function computeLocalStardate(date = new Date()){
-  // Fallback approximation tuned to TNG-style stardates:
-  // Use a reproducible formula: stardate = (year * 1000) + fraction_of_year*1000
-  // Then map to a TNG-like range by subtracting an epoch offset.
-  const year = date.getUTCFullYear();
-  const start = Date.UTC(year,0,1);
-  const end = Date.UTC(year+1,0,1);
-  const frac = (date.getTime() - start) / (end - start);
-  // epoch offset chosen so 2364-ish maps to 41000+ (TNG era feel)
-  const epochOffset = 2323; // arbitrary anchor
-  const st = ((year - epochOffset) * 1000) + Math.floor(frac * 1000);
-  // format as "SD 41xxx.y"
-  const major = Math.floor(st / 1);
-  const minor = Math.floor((st - major) * 10);
-  return `${major}.${minor}`;
-}
+  // Day of year (1..365/366)
+  const startOfYear = Date.UTC(year, 0, 1);
+  const dayOfYear = Math.floor((utc.getTime() - startOfYear) / 86400000) + 1;
 
-async function loadStardateScript(){
-  try{
-    // try to load user's stardate.js if present
-    const resp = await fetch(RAW_STARDATE_URL, {cache: "no-store"});
-    if(!resp.ok) throw new Error('no external stardate');
-    const scriptText = await resp.text();
-    // create a blob URL and import it as a module to avoid eval
-    const blob = new Blob([scriptText], {type: 'text/javascript'});
-    const url = URL.createObjectURL(blob);
-    // assume the script exports a function named `stardate` or `computeStardate`
-    const module = await import(url);
-    URL.revokeObjectURL(url);
-    if(module && typeof module.stardate === 'function'){
-      return (d)=>module.stardate(d);
-    }
-    if(module && typeof module.computeStardate === 'function'){
-      return (d)=>module.computeStardate(d);
-    }
-    // if module didn't export expected names, fallback
-    return (d)=>computeLocalStardate(d);
-  }catch(e){
-    // fallback to local approximation
-    return (d)=>computeLocalStardate(d);
-  }
+  // seconds since midnight UTC
+  const seconds = utc.getUTCHours() * 3600 + utc.getUTCMinutes() * 60 + utc.getUTCSeconds() + (utc.getUTCMilliseconds() / 1000);
+  const dayFraction = seconds / 86400;
+
+  const base = (year - 1961) * 1000;
+  const sd = base + 1000 * ((dayOfYear + dayFraction) / 365);
+
+  // format to 4 decimal places like the PowerShell output
+  return sd.toFixed(4);
 }
 
 /* ---------- UI update loop ---------- */
-let stardateFn = (d)=>computeLocalStardate(d);
-
-async function init(){
-  // try to load stardate implementation (user repo) but don't block UI
-  loadStardateScript().then(fn=>{
-    stardateFn = fn;
-  });
-
-  await fetchHebcal(false);
-  updateUI();
-  setInterval(updateUI, 1000);
-
-  // schedule daily refetch shortly after local midnight
-  const now = new Date();
-  const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1, 0,0,5) - now;
-  setTimeout(function dailyRefetch(){
-    fetchHebcal(true);
-    setInterval(()=>fetchHebcal(true), 24*60*60*1000);
-  }, msUntilMidnight);
-}
-
-/* ---------- updateUI ---------- */
 function updateUI(){
   const now = new Date();
   document.getElementById('localClock').innerText = formatClock(now);
   document.getElementById('tzLabel').innerText = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  // stardate (use stardateFn)
+  // stardate (PowerShell-derived)
   try{
-    const sd = stardateFn(now);
+    const sd = computeStardateFromPowerShell(now);
     document.getElementById('stardate').innerText = sd;
   }catch(e){
-    document.getElementById('stardate').innerText = computeLocalStardate(now);
+    document.getElementById('stardate').innerText = '—';
   }
 
   // countdown
@@ -380,6 +354,7 @@ function updateUI(){
   const hours = Math.floor(diffMs / (1000*60*60));
   const minutes = Math.floor((diffMs / (1000*60)) % 60);
   const seconds = Math.floor((diffMs / 1000) % 60);
+  // show HH:MM:SS with leading zeros; ensure it fits by using clamp font-size above
   document.getElementById('bigTime').innerText = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
   document.getElementById('subTime').innerText = `Candle‑lighting at ${formatHM(candleDate)}`;
   document.getElementById('liveDot').style.background = 'var(--lcars-teal)';
@@ -391,8 +366,20 @@ document.getElementById('refreshBtn').addEventListener('click', ()=>{
   fetchHebcal(true).then(()=>{ document.getElementById('statusText').innerText = 'Connected to Hebcal • Data refreshed'; });
 });
 
-/* ---------- Start ---------- */
-init();
+/* ---------- Init ---------- */
+(async function init(){
+  await fetchHebcal(false);
+  updateUI();
+  setInterval(updateUI, 1000);
+
+  // schedule daily refetch shortly after local midnight
+  const now = new Date();
+  const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1, 0,0,5) - now;
+  setTimeout(function dailyRefetch(){
+    fetchHebcal(true);
+    setInterval(()=>fetchHebcal(true), 24*60*60*1000);
+  }, msUntilMidnight);
+})();
 </script>
 </body>
 </html>
