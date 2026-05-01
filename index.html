@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,7 +73,7 @@
   /* Main area */
   .main{
     grid-row:2;
-    padding:18px;box-sizing:border-box;display:grid;grid-template-columns:1fr 460px;grid-template-rows:1fr 240px;gap:20px;overflow:hidden;
+    padding:18px;box-sizing:border-box;display:grid;grid-template-columns:1fr 520px;grid-template-rows:1fr 260px;gap:20px;overflow:hidden;
     min-width:0;
   }
 
@@ -83,25 +84,43 @@
     min-width:0;
   }
 
-  /* big countdown */
+  /* big countdown - horizontal, never cut off */
   .countdown{
-    height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
-    padding:8px;
+    height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:8px;
   }
   .label{font-size:14px;color:var(--lcars-gold);font-weight:900;letter-spacing:1px}
-  /* make big-time responsive and avoid cutoff: use clamp and allow wrapping */
+
+  /* Horizontal container for the countdown to avoid wrapping and cutoff */
+  .big-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+    width:100%;
+    box-sizing:border-box;
+    padding:6px 12px;
+  }
+
+  /* big-time: use clamp to scale, keep single-line, allow shrinking but not cutoff */
   .big-time{
     font-family:var(--font-mono);
-    font-size: clamp(40px, 7vw, 96px);
-    line-height:1;
+    font-size: clamp(36px, 6.5vw, 96px);
     color:var(--lcars-blue);
     text-shadow:0 10px 40px rgba(111,168,255,0.06);
-    word-break:break-word;
-    padding:6px 12px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
-    border-radius:8px;
+    white-space:nowrap;
+    overflow:visible;
+    display:inline-block;
     min-width:0;
   }
+
+  /* secondary label (e.g., "in HH:MM:SS" or "Candle-lighting at 19:34") */
+  .big-sub{
+    font-size: clamp(18px, 2.2vw, 28px);
+    color:var(--lcars-gold);
+    font-weight:800;
+    white-space:nowrap;
+  }
+
   .sub{font-size:16px;color:#cbd6e8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 
   /* right column modules */
@@ -120,6 +139,23 @@
   .mini.lcars{background:var(--lcars-blue)}
   .mini.tng{background:var(--lcars-pink)}
   .status{color:#cbd6e8;font-size:13px;max-width:520px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  /* Stardate frame: keep visible, boxed, and styled Enterprise-D */
+  .stardate-frame{
+    background:linear-gradient(90deg, rgba(111,168,255,0.04), rgba(255,255,255,0.01));
+    border: 2px solid rgba(111,168,255,0.08);
+    padding:10px 14px;
+    border-radius:10px;
+    min-width:160px;
+    text-align:center;
+  }
+  .stardate-label{font-size:12px;color:#9fb3d9}
+  .stardate-value{font-family:var(--font-mono);font-size:20px;color:var(--lcars-blue);font-weight:800}
+
+  /* Replace timezone area in clock module with stardate frame */
+  .clock-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .clock-left{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .clock-right{display:flex;align-items:center;gap:12px}
 
   /* buttons */
   .btn{padding:10px 14px;border-radius:10px;background:var(--lcars-orange);color:#071428;font-weight:900;border:none;cursor:pointer;box-shadow:0 8px 24px rgba(255,155,74,0.06)}
@@ -173,7 +209,13 @@
         <div class="panel" id="countdownPanel" aria-live="polite">
           <div class="countdown">
             <div class="label">CANDLE‑LIGHTING</div>
-            <div class="big-time" id="bigTime">--:--:--</div>
+
+            <!-- Horizontal row: big time + descriptive text -->
+            <div class="big-row" role="status" aria-live="polite">
+              <div class="big-time" id="bigTime">--:--:--</div>
+              <div class="big-sub" id="bigSub">Loading…</div>
+            </div>
+
             <div class="sub" id="subTime">Loading next Shabbos time…</div>
 
             <div style="display:flex;gap:12px;margin-top:18px;align-items:center">
@@ -190,9 +232,22 @@
         <!-- Right column -->
         <div style="display:flex;flex-direction:column;gap:18px">
           <div class="module" id="clockModule">
-            <h3>LOCAL CLOCK</h3>
-            <div class="value" id="localClock">--:--:--</div>
-            <div style="margin-top:8px;color:#9fb3d9;font-size:13px" id="tzLabel">Timezone</div>
+            <div class="clock-top">
+              <div class="clock-left">
+                <h3 style="margin:0;font-size:13px;color:var(--lcars-pink);letter-spacing:1px">LOCAL CLOCK</h3>
+                <div class="value" id="localClock" style="font-family:var(--font-mono);font-size:28px;color:var(--lcars-gold);margin-top:8px">--:--:--</div>
+              </div>
+
+              <!-- STARDATE FRAME placed where timezone info used to be -->
+              <div class="clock-right">
+                <div class="stardate-frame" aria-live="polite" role="note" title="Stardate">
+                  <div class="stardate-label">STARDATE</div>
+                  <div class="stardate-value" id="stardate">—</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:10px;color:#9fb3d9;font-size:13px" id="tzLabel">Timezone: <span id="tzName">—</span></div>
           </div>
 
           <div class="module" id="zmanimModule">
@@ -219,9 +274,10 @@
               <div style="font-weight:900;color:var(--lcars-gold)" id="hebrewDate">—</div>
             </div>
 
-            <div style="text-align:right;min-width:140px">
-              <div style="font-size:13px;color:#9fb3d9">STARDATE</div>
-              <div style="font-weight:900;color:var(--lcars-blue)" id="stardate">—</div>
+            <!-- keep a small stardate frame here as well for redundancy (optional) -->
+            <div class="stardate-frame" aria-hidden="true" style="min-width:120px;display:none">
+              <div class="stardate-label">STARDATE</div>
+              <div class="stardate-value">—</div>
             </div>
           </div>
         </div>
@@ -238,7 +294,6 @@ const HEBCAL_URL = `https://www.hebcal.com/shabbat?cfg=json&geonameid=${GEOID}&m
 
 /* ---------- Utility ---------- */
 const pad = (n)=>n.toString().padStart(2,'0');
-const pad4 = (n)=>n.toString().padStart(4,'0');
 function formatClock(d){ return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
 function formatHM(d){ return `${pad(d.getHours())}:${pad(d.getMinutes())}`; }
 
@@ -250,7 +305,7 @@ let havdalahDate = null;
 /* ---------- Hebcal fetch with daily cache ---------- */
 async function fetchHebcal(force=false){
   try{
-    const cached = localStorage.getItem('hebcal_cache_v3');
+    const cached = localStorage.getItem('hebcal_cache_v4');
     if(!force && cached){
       const obj = JSON.parse(cached);
       const cachedDate = new Date(obj.fetchedAt);
@@ -266,13 +321,13 @@ async function fetchHebcal(force=false){
     if(!resp.ok) throw new Error('Hebcal fetch failed');
     const data = await resp.json();
     hebData = data;
-    localStorage.setItem('hebcal_cache_v3', JSON.stringify({fetchedAt:new Date().toISOString(), data}));
+    localStorage.setItem('hebcal_cache_v4', JSON.stringify({fetchedAt:new Date().toISOString(), data}));
     applyHebcal(data);
     document.getElementById('statusText').innerText = 'Connected to Hebcal • Data refreshed daily';
   }catch(err){
     console.warn(err);
     document.getElementById('statusText').innerText = 'Hebcal unavailable — using cached data if present';
-    const cached = localStorage.getItem('hebcal_cache_v3');
+    const cached = localStorage.getItem('hebcal_cache_v4');
     if(cached){
       const obj = JSON.parse(cached);
       hebData = obj.data;
@@ -299,28 +354,19 @@ function applyHebcal(data){
 }
 
 /* ---------- Stardate (PowerShell algorithm translated to JS) ----------
-   Original PowerShell logic:
+   PowerShell logic:
      base = (year - 1961) * 1000
      sd = base + 1000 * ((doy + dayFraction) / 365)
-   We'll compute with fractional precision and format to 4 decimals.
 */
 function computeStardateFromPowerShell(date = new Date()){
-  // Use UTC to match a consistent epoch behavior
   const utc = new Date(date.getTime());
   const year = utc.getUTCFullYear();
-
-  // Day of year (1..365/366)
   const startOfYear = Date.UTC(year, 0, 1);
   const dayOfYear = Math.floor((utc.getTime() - startOfYear) / 86400000) + 1;
-
-  // seconds since midnight UTC
   const seconds = utc.getUTCHours() * 3600 + utc.getUTCMinutes() * 60 + utc.getUTCSeconds() + (utc.getUTCMilliseconds() / 1000);
   const dayFraction = seconds / 86400;
-
   const base = (year - 1961) * 1000;
   const sd = base + 1000 * ((dayOfYear + dayFraction) / 365);
-
-  // format to 4 decimal places like the PowerShell output
   return sd.toFixed(4);
 }
 
@@ -328,9 +374,9 @@ function computeStardateFromPowerShell(date = new Date()){
 function updateUI(){
   const now = new Date();
   document.getElementById('localClock').innerText = formatClock(now);
-  document.getElementById('tzLabel').innerText = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  document.getElementById('tzName').innerText = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  // stardate (PowerShell-derived)
+  // stardate
   try{
     const sd = computeStardateFromPowerShell(now);
     document.getElementById('stardate').innerText = sd;
@@ -341,12 +387,14 @@ function updateUI(){
   // countdown
   if(!candleDate){
     document.getElementById('bigTime').innerText = '--:--:--';
+    document.getElementById('bigSub').innerText = 'No candle time';
     document.getElementById('subTime').innerText = 'No candle time available';
     return;
   }
   const diffMs = candleDate - now;
   if(diffMs <= 0){
     document.getElementById('bigTime').innerText = 'SHABBOS';
+    document.getElementById('bigSub').innerText = 'Shabbos has started';
     document.getElementById('subTime').innerText = 'Shabbos has started';
     document.getElementById('liveDot').style.background = '#ff6666';
     return;
@@ -354,8 +402,10 @@ function updateUI(){
   const hours = Math.floor(diffMs / (1000*60*60));
   const minutes = Math.floor((diffMs / (1000*60)) % 60);
   const seconds = Math.floor((diffMs / 1000) % 60);
-  // show HH:MM:SS with leading zeros; ensure it fits by using clamp font-size above
+
+  // horizontal display: "HH:MM:SS" and "in Xh Ym Zs" kept on one line
   document.getElementById('bigTime').innerText = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+  document.getElementById('bigSub').innerText = `in ${hours}h ${minutes}m ${seconds}s`;
   document.getElementById('subTime').innerText = `Candle‑lighting at ${formatHM(candleDate)}`;
   document.getElementById('liveDot').style.background = 'var(--lcars-teal)';
 }
@@ -383,3 +433,4 @@ document.getElementById('refreshBtn').addEventListener('click', ()=>{
 </script>
 </body>
 </html>
+```
