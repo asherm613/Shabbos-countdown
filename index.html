@@ -173,6 +173,11 @@
   @keyframes scan {0%{opacity:0}50%{opacity:0.12}100%{opacity:0}}
   .scanline{position:absolute;left:0;right:0;height:2px;top:50%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.03),transparent);animation:scan 6s linear infinite;opacity:0.6;pointer-events:none}
 </style>
+
+<!-- Audio elements for TNG sound effects -->
+<audio id="sndRedAlert" src="tng_red_alert1.mp3"></audio>
+<audio id="sndWarp" src="tng_warp2_clean.mp3"></audio>
+<audio id="sndEmergency" src="alert01.mp3"></audio>
 </head>
 <body>
   <div class="viewport" role="application" aria-label="LCARS Shabbos Countdown — Enterprise D">
@@ -413,6 +418,31 @@ document.getElementById('refreshBtn').addEventListener('click', ()=>{
   fetchHebcal(true).then(()=>{ document.getElementById('statusText').innerText = 'Connected to Hebcal • Data refreshed'; });
 });
 
+/* ---------- Sound effects ---------- */
+document.getElementById('btnRedAlert').addEventListener('click', () => {
+  const audio = document.getElementById('sndRedAlert');
+  if(audio) {
+    audio.currentTime = 0;
+    audio.play().catch(e => console.log('Audio play failed:', e));
+  }
+});
+
+document.getElementById('btnWarp').addEventListener('click', () => {
+  const audio = document.getElementById('sndWarp');
+  if(audio) {
+    audio.currentTime = 0;
+    audio.play().catch(e => console.log('Audio play failed:', e));
+  }
+});
+
+document.getElementById('btnEmergency').addEventListener('click', () => {
+  const audio = document.getElementById('sndEmergency');
+  if(audio) {
+    audio.currentTime = 0;
+    audio.play().catch(e => console.log('Audio play failed:', e));
+  }
+});
+
 /* ---------- Init ---------- */
 (async function init(){
   await fetchHebcal(false);
@@ -427,27 +457,6 @@ document.getElementById('refreshBtn').addEventListener('click', ()=>{
     setInterval(()=>fetchHebcal(true), 24*60*60*1000);
   }, msUntilMidnight);
 })();
-<audio id="sndRedAlert" src="tng_red_alert1.mp3"></audio>
-<audio id="sndWarp" src="tng_warp2_clean.mp3"></audio>
-<audio id="sndEmergency" src="alert01.mp3"></audio>
-document.addEventListener("DOMContentLoaded", () => {
-    const red = document.getElementById("btnRedAlert");
-    const warp = document.getElementById("btnWarp");
-    const emergency = document.getElementById("btnEmergency");
-
-    if (red && warp && emergency) {
-        red.addEventListener("click", () => {
-            document.getElementById("sndRedAlert").play();
-        });
-        warp.addEventListener("click", () => {
-            document.getElementById("sndWarp").play();
-        });
-        emergency.addEventListener("click", () => {
-            document.getElementById("sndEmergency").play();
-        });
-    }
-});
-
 </script>
 </body>
 </html>
