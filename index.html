@@ -1,63 +1,112 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Shabbos Countdown</title>
-    <style>
-        body {
-            background: #111;
-            color: #0f0;
-            font-family: Consolas, monospace;
-            text-align: center;
-            padding-top: 80px;
-            font-size: 28px;
-        }
-        #time {
-            font-size: 48px;
-            margin-top: 20px;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>LCARS Shabbos Countdown</title>
+
+<style>
+    body {
+        margin: 0;
+        background: #000;
+        font-family: "Segoe UI", sans-serif;
+        color: #fff;
+        overflow: hidden;
+    }
+
+    /* LCARS Colors */
+    :root {
+        --lcars-orange: #ff9966;
+        --lcars-blue: #6699ff;
+        --lcars-pink: #ff6699;
+        --lcars-gold: #ffcc66;
+        --lcars-bg: #000000;
+    }
+
+    /* Left LCARS Pillar */
+    .lcars-left {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 180px;
+        height: 100%;
+        background: var(--lcars-orange);
+        border-top-right-radius: 90px;
+        border-bottom-right-radius: 90px;
+        padding-top: 40px;
+    }
+
+    /* LCARS segmented bars */
+    .segment {
+        height: 60px;
+        margin: 20px 0;
+        border-top-right-radius: 30px;
+        border-bottom-right-radius: 30px;
+    }
+
+    .pink { background: var(--lcars-pink); }
+    .blue { background: var(--lcars-blue); }
+    .gold { background: var(--lcars-gold); }
+
+    /* Main content */
+    .content {
+        margin-left: 220px;
+        padding: 40px;
+        color: var(--lcars-gold);
+        font-size: 32px;
+        text-align: center;
+    }
+
+    #time {
+        margin-top: 40px;
+        font-size: 60px;
+        color: var(--lcars-blue);
+    }
+
+    h1 {
+        font-size: 48px;
+        color: var(--lcars-pink);
+        margin-bottom: 10px;
+    }
+</style>
 </head>
+
 <body>
 
-<h1>Shabbos Countdown</h1>
-<div id="time">Loading…</div>
+<!-- LCARS Left Rail -->
+<div class="lcars-left">
+    <div class="segment pink"></div>
+    <div class="segment blue"></div>
+    <div class="segment gold"></div>
+    <div class="segment pink"></div>
+</div>
+
+<!-- Main Display -->
+<div class="content">
+    <h1>SHABBOS COUNTDOWN</h1>
+    <div id="time">Loading…</div>
+</div>
 
 <script>
 async function updateCountdown() {
     const now = new Date();
 
-    // Teaneck coordinates
-    const lat = 40.889;
-    const lon = -74.01;
+    // Hebcal API for Teaneck (geonameid 5105262)
+    const url = "https://www.hebcal.com/shabbat?cfg=json&geonameid=5105262&m=50";
 
-    // Find next Friday
-    const day = now.getDay();
-    const daysUntilFriday = (5 - day + 7) % 7;
-    const friday = new Date(now);
-    friday.setDate(now.getDate() + daysUntilFriday);
-
-    const dateStr = friday.toISOString().split("T")[0];
-
-    // NOAA API
-    const url = `https://api.sunrise-sunset.org/json?lat=${lat}&lng=${lon}&date=${dateStr}&formatted=0`;
     const response = await fetch(url);
     const data = await response.json();
 
-    // Sunset in UTC
-    const sunsetUTC = new Date(data.results.sunset);
+    // Find candle-lighting event
+    const candleEvent = data.items.find(item => item.category === "candles");
 
-    // Convert to local time
-    const sunsetLocal = new Date(sunsetUTC.toLocaleString("en-US", { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone }));
-
-    // Candle-lighting = sunset - 18 minutes
-    const candle = new Date(sunsetLocal.getTime() - 18 * 60000);
+    // Candle-lighting time
+    const candle = new Date(candleEvent.date);
 
     // Time difference
     const diffMs = candle - now;
 
     if (diffMs <= 0) {
-        document.getElementById("time").innerText = "Shabbos is now";
+        document.getElementById("time").innerText = "SHABBOS IS NOW";
         return;
     }
 
@@ -65,7 +114,7 @@ async function updateCountdown() {
     const diffMinutes = Math.floor((diffMs / (1000 * 60)) % 60);
 
     document.getElementById("time").innerText =
-        `Shabbos is in ${diffHours} hours and ${diffMinutes} minutes`;
+        `${diffHours} HOURS  ${diffMinutes} MINUTES`;
 }
 
 // Update every second
