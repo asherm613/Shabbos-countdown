@@ -427,11 +427,10 @@ document.getElementById('refreshBtn').addEventListener('click', ()=>{
     setInterval(()=>fetchHebcal(true), 24*60*60*1000);
   }, msUntilMidnight);
 })();
-  <audio id="sndRedAlert" src="tng_red_alert1.mp3"></audio>
+<audio id="sndRedAlert" src="tng_red_alert1.mp3"></audio>
 <audio id="sndWarp" src="tng_warp2_clean.mp3"></audio>
 <audio id="sndEmergency" src="alert01.mp3"></audio>
-</script>
-  document.getElementById("btnRedAlert").addEventListener("click", () => {
+    document.getElementById("btnRedAlert").addEventListener("click", () => {
     document.getElementById("sndRedAlert").play();
 });
 
@@ -442,6 +441,6 @@ document.getElementById("btnWarp").addEventListener("click", () => {
 document.getElementById("btnEmergency").addEventListener("click", () => {
     document.getElementById("sndEmergency").play();
 });
-
+</script>
 </body>
 </html>
