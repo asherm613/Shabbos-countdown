@@ -3,248 +3,238 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>LCARS Shabbos Countdown — TNG</title>
+<title>LCARS Shabbos Countdown — USS Enterprise D</title>
 
 <style>
-  /* ---------- Base ---------- */
+  /* ---------- Base / Layout ---------- */
   :root{
-    --bg:#000;
-    --panel:#0b0b0b;
+    --bg-1:#03030a;
+    --bg-2:#071026;
     --lcars-orange:#ff9b4a;
     --lcars-gold:#ffd36b;
     --lcars-blue:#6fa8ff;
     --lcars-pink:#ff7fbf;
     --lcars-teal:#66e0d6;
-    --glass: rgba(255,255,255,0.03);
-    --accent-glow: 0 6px 18px rgba(255,155,74,0.12);
-    --mono: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+    --panel-glow: 0 10px 40px rgba(111,168,255,0.06);
+    --safe-padding: 18px;
+    --rail-width: 240px;
+    --max-content-width: 1400px;
+    --font-sans: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
   }
-  html,body{height:100%;margin:0;background:linear-gradient(180deg,#020202 0%, #05050a 100%);font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;color:#fff;overflow:hidden}
-  .screen{position:relative;width:100%;height:100%;box-sizing:border-box;padding:18px 22px}
 
-  /* ---------- LCARS Top Bar ---------- */
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg-1) 0%, var(--bg-2) 100%);font-family:var(--font-sans);color:#fff;overflow:hidden}
+  .viewport{box-sizing:border-box;padding:var(--safe-padding);height:100%;display:flex;justify-content:center;align-items:stretch}
+
+  /* center container with safe margins so nothing is cut off */
+  .stage{
+    width:100%;
+    max-width:var(--max-content-width);
+    height:100%;
+    display:grid;
+    grid-template-columns: var(--rail-width) 1fr;
+    grid-template-rows: 120px 1fr 120px;
+    gap:18px;
+    box-sizing:border-box;
+    position:relative;
+  }
+
+  /* ---------- Top LCARS bar (Enterprise D style) ---------- */
   .topbar{
-    position:absolute;left:0;right:0;top:18px;height:86px;
-    display:flex;align-items:center;gap:18px;padding-left:220px;
-    pointer-events:none;
+    grid-column:1 / span 2;
+    display:flex;align-items:center;gap:18px;padding:18px;border-radius:12px;
+    background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    box-shadow:var(--panel-glow);
+    overflow:hidden;
   }
   .top-left-pill{
-    position:absolute;left:18px;top:18px;width:220px;height:86px;
-    background:linear-gradient(90deg,var(--lcars-orange),#ff8a3a);
-    border-top-right-radius:48px;border-bottom-right-radius:48px;
-    box-shadow:var(--accent-glow);
+    width:260px;height:84px;border-top-right-radius:48px;border-bottom-right-radius:48px;
+    background:linear-gradient(90deg,var(--lcars-orange),#ff8a3a);display:flex;align-items:center;justify-content:center;
+    color:#071428;font-weight:800;font-size:18px;
+    box-shadow:0 8px 30px rgba(255,155,74,0.08);
+    flex-shrink:0;
   }
-  .topbar .title{
-    font-weight:700;font-size:20px;color:var(--panel);letter-spacing:1px;
-    background:linear-gradient(90deg,var(--lcars-pink),var(--lcars-gold));
-    -webkit-background-clip:text;background-clip:text;color:transparent;
-    pointer-events:auto;
-  }
-  .topbar .sub{
-    margin-left:12px;font-size:12px;color:#bfc7d6;opacity:0.9;
-  }
+  .top-title{font-weight:700;font-size:20px;color:var(--lcars-pink);letter-spacing:1px}
+  .top-sub{font-size:13px;color:#bfc7d6;margin-left:8px}
 
-  /* ---------- Left Rail ---------- */
+  /* ---------- Left rail (modules) ---------- */
   .left-rail{
-    position:absolute;left:18px;top:120px;width:220px;bottom:120px;
-    display:flex;flex-direction:column;gap:18px;padding:18px;
-    box-sizing:border-box;
+    grid-row:2;
+    padding:18px;display:flex;flex-direction:column;gap:18px;box-sizing:border-box;
   }
   .rail-pill{
-    height:72px;border-radius:36px 36px 36px 36px;background:var(--lcars-orange);
-    display:flex;align-items:center;padding:12px 18px;box-sizing:border-box;
-    box-shadow:var(--accent-glow);
+    height:84px;border-radius:42px;background:var(--lcars-orange);display:flex;align-items:center;padding:12px 18px;color:#071428;font-weight:800;
+    box-shadow:0 8px 30px rgba(255,155,74,0.06);
   }
-  .rail-pill .label{font-weight:700;color:#0b0b0b;font-size:14px}
-  .rail-seg{height:48px;border-radius:24px;background:var(--lcars-pink);display:flex;align-items:center;padding:8px 14px;color:#0b0b0b;font-weight:700}
-  .rail-small{height:36px;border-radius:18px;background:var(--lcars-blue);display:flex;align-items:center;padding:6px 12px;color:#0b0b0b;font-weight:700}
+  .rail-seg{height:56px;border-radius:28px;background:var(--lcars-pink);display:flex;align-items:center;padding:8px 14px;color:#071428;font-weight:800}
+  .rail-small{height:44px;border-radius:22px;background:var(--lcars-blue);display:flex;align-items:center;padding:6px 12px;color:#071428;font-weight:800}
 
-  /* ---------- Main Grid ---------- */
+  /* ---------- Main area ---------- */
   .main{
-    position:absolute;left:260px;right:18px;top:120px;bottom:120px;padding:28px;box-sizing:border-box;
-    display:grid;grid-template-columns: 1fr 420px;grid-template-rows: 1fr 220px;gap:22px;
+    grid-row:2;
+    padding:18px;box-sizing:border-box;display:grid;grid-template-columns:1fr 420px;grid-template-rows:1fr 220px;gap:18px;overflow:hidden;
   }
 
-  /* Big central LCARS panel */
   .panel{
     background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-radius:18px;padding:28px;box-sizing:border-box;position:relative;overflow:hidden;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
-  }
-  .panel::after{
-    content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;
-    background:radial-gradient(circle at 30% 30%, rgba(111,168,255,0.06), transparent 30%);
-    pointer-events:none;
+    border-radius:14px;padding:20px;box-sizing:border-box;position:relative;overflow:hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
   }
 
-  /* Countdown display */
+  /* big countdown */
   .countdown{
-    display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;
-    gap:12px;
+    height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
   }
-  .countdown .big{
-    font-family:var(--mono);font-size:84px;letter-spacing:2px;color:var(--lcars-blue);
-    text-shadow:0 6px 28px rgba(111,168,255,0.08);
-  }
-  .countdown .label{font-size:18px;color:var(--lcars-gold);font-weight:700;letter-spacing:1px}
+  .label{font-size:14px;color:var(--lcars-gold);font-weight:800;letter-spacing:1px}
+  .big-time{font-family:var(--font-mono);font-size:84px;color:var(--lcars-blue);text-shadow:0 10px 40px rgba(111,168,255,0.06)}
+  .sub{font-size:16px;color:#cbd6e8}
 
-  /* Right column modules */
+  /* right column modules */
   .modules{display:flex;flex-direction:column;gap:18px;height:100%}
-  .module{
-    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
-    border-radius:12px;padding:16px;box-sizing:border-box;height:100%;
+  .module{padding:14px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02))}
+  .module h3{margin:0;font-size:13px;color:var(--lcars-pink);letter-spacing:1px}
+  .module .value{font-family:var(--font-mono);font-size:28px;color:var(--lcars-gold);margin-top:8px}
+
+  /* bottom row */
+  .bottom{
+    grid-column:1 / span 2;display:flex;gap:18px;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+    box-sizing:border-box;align-items:center;justify-content:space-between;
   }
-  .module h3{margin:0;font-size:14px;color:var(--lcars-pink);letter-spacing:1px}
-  .module .value{font-family:var(--mono);font-size:28px;color:var(--lcars-gold);margin-top:8px}
+  .info{display:flex;gap:18px;align-items:center}
+  .mini{width:120px;height:64px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#071428}
+  .mini.lcars{background:var(--lcars-blue)}
+  .mini.tng{background:var(--lcars-pink)}
+  .status{color:#cbd6e8;font-size:13px}
 
-  /* Bottom row panels */
-  .bottom-row{grid-column:1 / span 2;display:flex;gap:22px}
-  .info-card{flex:1;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));border-radius:12px;padding:18px;box-sizing:border-box;display:flex;flex-direction:row;gap:18px;align-items:center}
-  .info-card .left{width:140px;height:100%;display:flex;flex-direction:column;gap:8px}
-  .info-card .left .mini{height:44px;border-radius:10px;background:var(--lcars-blue);display:flex;align-items:center;justify-content:center;color:#071428;font-weight:800}
-  .info-card .right{flex:1}
-  .info-card .right p{margin:0;color:#cbd6e8}
+  /* buttons */
+  .btn{padding:10px 14px;border-radius:10px;background:var(--lcars-orange);color:#071428;font-weight:800;border:none;cursor:pointer;box-shadow:0 8px 24px rgba(255,155,74,0.06)}
 
-  /* LCARS buttons and indicators */
-  .btn-row{display:flex;gap:12px;margin-top:12px}
-  .lcars-btn{padding:10px 14px;border-radius:12px;background:var(--lcars-orange);color:#071428;font-weight:800;cursor:pointer;border:none;box-shadow:var(--accent-glow)}
-  .indicator{width:12px;height:12px;border-radius:50%;background:var(--lcars-teal);box-shadow:0 4px 12px rgba(102,224,214,0.18)}
-
-  /* small text */
-  .muted{color:#9aa7c7;font-size:13px}
-
-  /* responsive */
+  /* small screens: scale content instead of cutting off */
   @media (max-width:1100px){
-    .main{grid-template-columns:1fr;grid-template-rows:1fr 220px 1fr}
+    .stage{grid-template-columns: 1fr;grid-template-rows: 100px auto 160px;gap:12px}
+    .top-left-pill{display:none}
+    .left-rail{display:flex;flex-direction:row;overflow:auto;padding:8px;height:auto}
+    .main{grid-row:2;padding:12px;grid-template-columns:1fr;grid-template-rows:auto auto;gap:12px}
     .modules{flex-direction:row;overflow:auto}
-    .left-rail{display:none}
-    .topbar{padding-left:18px}
+    .big-time{font-size:56px}
   }
 
-  /* subtle animations */
-  @keyframes scan {
-    0%{transform:translateX(-30px);opacity:0}
-    50%{transform:translateX(0);opacity:1}
-    100%{transform:translateX(30px);opacity:0}
-  }
-  .scanline{position:absolute;left:0;right:0;height:1px;top:50%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.03),transparent);animation:scan 6s linear infinite;opacity:0.6;pointer-events:none}
+  /* ensure nothing is clipped by adding safe margins and scroll when needed */
+  .stage, .main, .left-rail, .panel {min-width:0;min-height:0}
+  .main {overflow:auto}
+  .left-rail {overflow:auto}
 </style>
 </head>
 <body>
-  <div class="screen" role="application" aria-label="LCARS Shabbos Countdown">
+  <div class="viewport" role="application" aria-label="LCARS Shabbos Countdown — Enterprise D">
+    <div class="stage" id="stage">
 
-    <!-- left LCARS pill -->
-    <div class="top-left-pill" aria-hidden="true"></div>
-
-    <!-- top bar -->
-    <div class="topbar" aria-hidden="true">
-      <div style="display:flex;align-items:center;gap:12px">
-        <div class="title">LCARS — SHABBOS SYSTEM</div>
-        <div class="sub muted">Teaneck, NJ • Halachic Candle‑lighting</div>
+      <!-- Top bar -->
+      <div class="topbar" role="banner">
+        <div class="top-left-pill" aria-hidden="true">USS ENTERPRISE‑D</div>
+        <div>
+          <div class="top-title">LCARS — SHABBOS SYSTEM</div>
+          <div class="top-sub">Teaneck, NJ • Halachic Candle‑lighting • Enterprise D Console</div>
+        </div>
       </div>
-    </div>
 
-    <!-- left rail modules -->
-    <div class="left-rail" aria-hidden="true">
-      <div class="rail-pill"><div class="label">OPS CORE</div></div>
-      <div class="rail-seg">COMM</div>
-      <div class="rail-small">SENSORS</div>
-      <div class="rail-small">LOG</div>
-      <div class="rail-small">SETTINGS</div>
-    </div>
+      <!-- Left rail -->
+      <div class="left-rail" role="navigation" aria-label="LCARS Modules">
+        <div class="rail-pill">OPS CORE</div>
+        <div class="rail-seg">COMM</div>
+        <div class="rail-small">SENSORS</div>
+        <div class="rail-small">LOG</div>
+        <div class="rail-small">SETTINGS</div>
+      </div>
 
-    <!-- main grid -->
-    <div class="main">
+      <!-- Main content -->
+      <div class="main" role="main">
 
-      <!-- big countdown panel -->
-      <div class="panel" id="countdownPanel" role="region" aria-label="Shabbos countdown">
-        <div class="countdown" id="countdown">
-          <div class="label">CANDLE‑LIGHTING</div>
-          <div class="big" id="bigTime">—:—</div>
-          <div class="muted" id="subTime">Loading next Shabbos time…</div>
-          <div class="btn-row" style="margin-top:18px">
-            <button class="lcars-btn" id="refreshBtn" title="Refresh times">REFRESH</button>
-            <div style="display:flex;align-items:center;gap:8px">
-              <div class="indicator" id="liveIndicator" title="Live"></div>
-              <div class="muted">LIVE</div>
+        <!-- Countdown panel -->
+        <div class="panel" id="countdownPanel" aria-live="polite">
+          <div class="countdown">
+            <div class="label">CANDLE‑LIGHTING</div>
+            <div class="big-time" id="bigTime">--:--:--</div>
+            <div class="sub" id="subTime">Loading next Shabbos time…</div>
+
+            <div style="display:flex;gap:12px;margin-top:18px;align-items:center">
+              <button class="btn" id="refreshBtn">REFRESH</button>
+              <div style="display:flex;align-items:center;gap:8px">
+                <div style="width:12px;height:12px;border-radius:50%;background:var(--lcars-teal)" id="liveDot" aria-hidden="true"></div>
+                <div style="color:#cbd6e8;font-size:13px">LIVE</div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="scanline" aria-hidden="true"></div>
-      </div>
 
-      <!-- right column modules -->
-      <div style="display:flex;flex-direction:column;gap:18px">
-        <div class="module" id="clockModule" aria-live="polite">
-          <h3>LOCAL CLOCK</h3>
-          <div class="value" id="localClock">--:--:--</div>
-          <div class="muted" style="margin-top:8px" id="tzLabel">America/New_York</div>
-        </div>
-
-        <div class="module" id="zmanimModule" aria-live="polite">
-          <h3>SHABBOS TIMES</h3>
-          <div class="value" id="candleText">Candle‑lighting: —</div>
-          <div class="muted" id="havText" style="margin-top:8px">Havdalah: —</div>
-        </div>
-      </div>
-
-      <!-- bottom row -->
-      <div class="bottom-row" style="grid-column:1 / span 2">
-        <div class="info-card">
-          <div class="left">
-            <div class="mini">LCARS</div>
-            <div class="mini" style="background:var(--lcars-gold);color:#071428">TNG</div>
+        <!-- Right column -->
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div class="module" id="clockModule">
+            <h3>LOCAL CLOCK</h3>
+            <div class="value" id="localClock">--:--:--</div>
+            <div style="margin-top:8px;color:#9fb3d9;font-size:13px" id="tzLabel">Timezone</div>
           </div>
-          <div class="right">
-            <h3 style="color:var(--lcars-pink);margin:0">SYSTEM STATUS</h3>
-            <p class="muted" id="statusText">Connected to Hebcal • Geonameid 5105262 • Data refreshed daily</p>
+
+          <div class="module" id="zmanimModule">
+            <h3>SHABBOS TIMES</h3>
+            <div class="value" id="candleText">Candle‑lighting: —</div>
+            <div style="margin-top:8px;color:#9fb3d9;font-size:13px" id="havText">Havdalah: —</div>
           </div>
         </div>
 
-        <div class="info-card">
-          <div class="left">
-            <div class="mini" style="background:var(--lcars-blue);color:#071428">PARSHA</div>
-            <div class="mini" style="background:var(--lcars-pink);color:#071428">HEBREW DATE</div>
+        <!-- Bottom row (spans both columns) -->
+        <div class="bottom" style="grid-column:1 / span 2">
+          <div class="info">
+            <div class="mini lcars">LCARS</div>
+            <div class="mini tng">TNG</div>
+            <div style="display:flex;flex-direction:column">
+              <div style="font-weight:700;color:var(--lcars-pink)" id="parshaName">—</div>
+              <div class="status" id="statusText">Connecting to Hebcal • Geonameid 5105262</div>
+            </div>
           </div>
-          <div class="right">
-            <h3 style="color:var(--lcars-gold);margin:0" id="parshaName">—</h3>
-            <p class="muted" id="hebrewDate">—</p>
+
+          <div style="display:flex;align-items:center;gap:18px">
+            <div style="text-align:right">
+              <div style="font-size:13px;color:#9fb3d9">HEBREW DATE</div>
+              <div style="font-weight:700;color:var(--lcars-gold)" id="hebrewDate">—</div>
+            </div>
+
+            <div style="text-align:right">
+              <div style="font-size:13px;color:#9fb3d9">STARDATE</div>
+              <div style="font-weight:700;color:var(--lcars-blue)" id="stardate">—</div>
+            </div>
           </div>
         </div>
-      </div>
 
-    </div> <!-- main -->
+      </div> <!-- main -->
 
-  </div> <!-- screen -->
+    </div> <!-- stage -->
+  </div> <!-- viewport -->
 
 <script>
 /* ---------- Configuration ---------- */
-const GEOID = 5105262;            // Teaneck
+const GEOID = 5105262; // Teaneck
 const HEBCAL_URL = `https://www.hebcal.com/shabbat?cfg=json&geonameid=${GEOID}&m=50`;
+
+/* ---------- Utility ---------- */
+const pad = (n)=>n.toString().padStart(2,'0');
+const pad3 = (n)=>n.toString().padStart(3,'0');
+function formatClock(d){ return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
+function formatHM(d){ return `${pad(d.getHours())}:${pad(d.getMinutes())}`; }
 
 /* ---------- State ---------- */
 let hebData = null;
 let candleDate = null;
 let havdalahDate = null;
 
-/* ---------- Helpers ---------- */
-function pad(n){return n.toString().padStart(2,'0')}
-function formatTime(d){
-  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-function formatClock(d){
-  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-}
-
-/* ---------- Fetch Hebcal (cached daily) ---------- */
+/* ---------- Hebcal fetch with daily cache ---------- */
 async function fetchHebcal(force=false){
   try{
-    const cached = localStorage.getItem('hebcal_cache');
+    const cached = localStorage.getItem('hebcal_cache_v2');
     if(!force && cached){
       const obj = JSON.parse(cached);
       const cachedDate = new Date(obj.fetchedAt);
       const now = new Date();
-      // reuse if same day (local)
       if(cachedDate.toDateString() === now.toDateString()){
         hebData = obj.data;
         applyHebcal(hebData);
@@ -256,12 +246,13 @@ async function fetchHebcal(force=false){
     if(!resp.ok) throw new Error('Hebcal fetch failed');
     const data = await resp.json();
     hebData = data;
-    localStorage.setItem('hebcal_cache', JSON.stringify({fetchedAt:new Date().toISOString(), data}));
+    localStorage.setItem('hebcal_cache_v2', JSON.stringify({fetchedAt:new Date().toISOString(), data}));
     applyHebcal(data);
+    document.getElementById('statusText').innerText = 'Connected to Hebcal • Data refreshed daily';
   }catch(err){
-    console.error(err);
-    document.getElementById('statusText').innerText = 'Offline or Hebcal error • Using cached data if available';
-    const cached = localStorage.getItem('hebcal_cache');
+    console.warn(err);
+    document.getElementById('statusText').innerText = 'Hebcal unavailable — using cached data if present';
+    const cached = localStorage.getItem('hebcal_cache_v2');
     if(cached){
       const obj = JSON.parse(cached);
       hebData = obj.data;
@@ -270,76 +261,138 @@ async function fetchHebcal(force=false){
   }
 }
 
-/* ---------- Apply Hebcal data to UI ---------- */
+/* ---------- Apply Hebcal ---------- */
 function applyHebcal(data){
-  // find candle and havdalah items
   const items = data.items || [];
   const candleItem = items.find(i => i.category === 'candles');
   const havItem = items.find(i => i.category === 'havdalah');
   const parshaItem = items.find(i => i.category === 'parashat');
-  const hebDate = data.title || '';
+  const hebTitle = data.title || '';
 
   if(candleItem) candleDate = new Date(candleItem.date);
   if(havItem) havdalahDate = new Date(havItem.date);
 
-  document.getElementById('candleText').innerText = `Candle‑lighting: ${candleDate ? formatTime(candleDate) : '—'}`;
-  document.getElementById('havText').innerText = `Havdalah: ${havdalahDate ? formatTime(havdalahDate) : '—'}`;
+  document.getElementById('candleText').innerText = `Candle‑lighting: ${candleDate ? formatHM(candleDate) : '—'}`;
+  document.getElementById('havText').innerText = `Havdalah: ${havdalahDate ? formatHM(havdalahDate) : '—'}`;
   document.getElementById('parshaName').innerText = parshaItem ? parshaItem.title : '—';
-  document.getElementById('hebrewDate').innerText = hebDate || '—';
-  document.getElementById('statusText').innerText = 'Connected to Hebcal • Data refreshed daily';
+  document.getElementById('hebrewDate').innerText = hebTitle || '—';
 }
 
-/* ---------- Countdown logic (updates every second) ---------- */
-function updateUI(){
-  const now = new Date();
-  // local clock
-  document.getElementById('localClock').innerText = formatClock(now);
-  document.getElementById('tzLabel').innerText = Intl.DateTimeFormat().resolvedOptions().timeZone;
+/* ---------- Stardate integration ----------
+   Attempt to load user's stardate script from their repo (raw). If it exists, use it.
+   Fallback: local TNG-like stardate approximation.
+   The loader is permissive: it won't break the page if the external file is missing.
+*/
+const RAW_STARDATE_URL = 'https://raw.githubusercontent.com/asherm613/Shabbos-countdown/main/stardate.js';
 
-  // countdown
-  if(!candleDate){
-    document.getElementById('bigTime').innerText = '--:--';
-    document.getElementById('subTime').innerText = 'No candle time available';
-    return;
-  }
-
-  const diffMs = candleDate - now;
-  if(diffMs <= 0){
-    document.getElementById('bigTime').innerText = 'SHABBOS';
-    document.getElementById('subTime').innerText = 'Shabbos has started';
-    document.getElementById('liveIndicator').style.background = '#ff6666';
-    return;
-  }
-
-  const hours = Math.floor(diffMs / (1000*60*60));
-  const minutes = Math.floor((diffMs / (1000*60)) % 60);
-  const seconds = Math.floor((diffMs / 1000) % 60);
-
-  document.getElementById('bigTime').innerText = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-  document.getElementById('subTime').innerText = `Candle‑lighting at ${formatTime(candleDate)}`;
-  document.getElementById('liveIndicator').style.background = '#66e0d6';
+function computeLocalStardate(date = new Date()){
+  // Fallback approximation tuned to TNG-style stardates:
+  // Use a reproducible formula: stardate = (year * 1000) + fraction_of_year*1000
+  // Then map to a TNG-like range by subtracting an epoch offset.
+  const year = date.getUTCFullYear();
+  const start = Date.UTC(year,0,1);
+  const end = Date.UTC(year+1,0,1);
+  const frac = (date.getTime() - start) / (end - start);
+  // epoch offset chosen so 2364-ish maps to 41000+ (TNG era feel)
+  const epochOffset = 2323; // arbitrary anchor
+  const st = ((year - epochOffset) * 1000) + Math.floor(frac * 1000);
+  // format as "SD 41xxx.y"
+  const major = Math.floor(st / 1);
+  const minor = Math.floor((st - major) * 10);
+  return `${major}.${minor}`;
 }
 
-/* ---------- Manual refresh ---------- */
-document.getElementById('refreshBtn').addEventListener('click', ()=>{
-  document.getElementById('statusText').innerText = 'Refreshing…';
-  fetchHebcal(true);
-});
+async function loadStardateScript(){
+  try{
+    // try to load user's stardate.js if present
+    const resp = await fetch(RAW_STARDATE_URL, {cache: "no-store"});
+    if(!resp.ok) throw new Error('no external stardate');
+    const scriptText = await resp.text();
+    // create a blob URL and import it as a module to avoid eval
+    const blob = new Blob([scriptText], {type: 'text/javascript'});
+    const url = URL.createObjectURL(blob);
+    // assume the script exports a function named `stardate` or `computeStardate`
+    const module = await import(url);
+    URL.revokeObjectURL(url);
+    if(module && typeof module.stardate === 'function'){
+      return (d)=>module.stardate(d);
+    }
+    if(module && typeof module.computeStardate === 'function'){
+      return (d)=>module.computeStardate(d);
+    }
+    // if module didn't export expected names, fallback
+    return (d)=>computeLocalStardate(d);
+  }catch(e){
+    // fallback to local approximation
+    return (d)=>computeLocalStardate(d);
+  }
+}
 
-/* ---------- Init ---------- */
-(async function init(){
+/* ---------- UI update loop ---------- */
+let stardateFn = (d)=>computeLocalStardate(d);
+
+async function init(){
+  // try to load stardate implementation (user repo) but don't block UI
+  loadStardateScript().then(fn=>{
+    stardateFn = fn;
+  });
+
   await fetchHebcal(false);
   updateUI();
-  // update every second
   setInterval(updateUI, 1000);
-  // re-fetch at local midnight to get next day's hebcal
+
+  // schedule daily refetch shortly after local midnight
   const now = new Date();
   const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1, 0,0,5) - now;
   setTimeout(function dailyRefetch(){
     fetchHebcal(true);
     setInterval(()=>fetchHebcal(true), 24*60*60*1000);
   }, msUntilMidnight);
-})();
+}
+
+/* ---------- updateUI ---------- */
+function updateUI(){
+  const now = new Date();
+  document.getElementById('localClock').innerText = formatClock(now);
+  document.getElementById('tzLabel').innerText = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  // stardate (use stardateFn)
+  try{
+    const sd = stardateFn(now);
+    document.getElementById('stardate').innerText = sd;
+  }catch(e){
+    document.getElementById('stardate').innerText = computeLocalStardate(now);
+  }
+
+  // countdown
+  if(!candleDate){
+    document.getElementById('bigTime').innerText = '--:--:--';
+    document.getElementById('subTime').innerText = 'No candle time available';
+    return;
+  }
+  const diffMs = candleDate - now;
+  if(diffMs <= 0){
+    document.getElementById('bigTime').innerText = 'SHABBOS';
+    document.getElementById('subTime').innerText = 'Shabbos has started';
+    document.getElementById('liveDot').style.background = '#ff6666';
+    return;
+  }
+  const hours = Math.floor(diffMs / (1000*60*60));
+  const minutes = Math.floor((diffMs / (1000*60)) % 60);
+  const seconds = Math.floor((diffMs / 1000) % 60);
+  document.getElementById('bigTime').innerText = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+  document.getElementById('subTime').innerText = `Candle‑lighting at ${formatHM(candleDate)}`;
+  document.getElementById('liveDot').style.background = 'var(--lcars-teal)';
+}
+
+/* ---------- Refresh button ---------- */
+document.getElementById('refreshBtn').addEventListener('click', ()=>{
+  document.getElementById('statusText').innerText = 'Refreshing…';
+  fetchHebcal(true).then(()=>{ document.getElementById('statusText').innerText = 'Connected to Hebcal • Data refreshed'; });
+});
+
+/* ---------- Start ---------- */
+init();
 </script>
 </body>
 </html>
