@@ -430,17 +430,24 @@ document.getElementById('refreshBtn').addEventListener('click', ()=>{
 <audio id="sndRedAlert" src="tng_red_alert1.mp3"></audio>
 <audio id="sndWarp" src="tng_warp2_clean.mp3"></audio>
 <audio id="sndEmergency" src="alert01.mp3"></audio>
-    document.getElementById("btnRedAlert").addEventListener("click", () => {
-    document.getElementById("sndRedAlert").play();
+document.addEventListener("DOMContentLoaded", () => {
+    const red = document.getElementById("btnRedAlert");
+    const warp = document.getElementById("btnWarp");
+    const emergency = document.getElementById("btnEmergency");
+
+    if (red && warp && emergency) {
+        red.addEventListener("click", () => {
+            document.getElementById("sndRedAlert").play();
+        });
+        warp.addEventListener("click", () => {
+            document.getElementById("sndWarp").play();
+        });
+        emergency.addEventListener("click", () => {
+            document.getElementById("sndEmergency").play();
+        });
+    }
 });
 
-document.getElementById("btnWarp").addEventListener("click", () => {
-    document.getElementById("sndWarp").play();
-});
-
-document.getElementById("btnEmergency").addEventListener("click", () => {
-    document.getElementById("sndEmergency").play();
-});
 </script>
 </body>
 </html>
