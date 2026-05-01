@@ -189,6 +189,9 @@
 
       <!-- Left rail -->
       <div class="left-rail" role="navigation" aria-label="LCARS Modules">
+        <div class="rail-small" id="btnRedAlert">RED ALERT</div>
+        <div class="rail-small" id="btnWarp">MAXIMUM WARP</div>
+        <div class="rail-small" id="btnEmergency">EMERGENCY</div>
         <div class="rail-pill">OPS CORE</div>
         <div class="rail-seg">COMM</div>
         <div class="rail-small">SENSORS</div>
@@ -424,6 +427,9 @@ document.getElementById('refreshBtn').addEventListener('click', ()=>{
     setInterval(()=>fetchHebcal(true), 24*60*60*1000);
   }, msUntilMidnight);
 })();
+  <audio id="sndRedAlert" src="tng_red_alert1.mp3"></audio>
+<audio id="sndWarp" src="tng_warp2_clean.mp3"></audio>
+<audio id="sndEmergency" src="alert01.mp3"></audio>
 </script>
 </body>
 </html>
