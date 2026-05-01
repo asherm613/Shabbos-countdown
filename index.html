@@ -1,126 +1,345 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>LCARS Shabbos Countdown</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>LCARS Shabbos Countdown — TNG</title>
 
 <style>
-    body {
-        margin: 0;
-        background: #000;
-        font-family: "Segoe UI", sans-serif;
-        color: #fff;
-        overflow: hidden;
-    }
+  /* ---------- Base ---------- */
+  :root{
+    --bg:#000;
+    --panel:#0b0b0b;
+    --lcars-orange:#ff9b4a;
+    --lcars-gold:#ffd36b;
+    --lcars-blue:#6fa8ff;
+    --lcars-pink:#ff7fbf;
+    --lcars-teal:#66e0d6;
+    --glass: rgba(255,255,255,0.03);
+    --accent-glow: 0 6px 18px rgba(255,155,74,0.12);
+    --mono: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+  }
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,#020202 0%, #05050a 100%);font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;color:#fff;overflow:hidden}
+  .screen{position:relative;width:100%;height:100%;box-sizing:border-box;padding:18px 22px}
 
-    /* LCARS Colors */
-    :root {
-        --lcars-orange: #ff9966;
-        --lcars-blue: #6699ff;
-        --lcars-pink: #ff6699;
-        --lcars-gold: #ffcc66;
-        --lcars-bg: #000000;
-    }
+  /* ---------- LCARS Top Bar ---------- */
+  .topbar{
+    position:absolute;left:0;right:0;top:18px;height:86px;
+    display:flex;align-items:center;gap:18px;padding-left:220px;
+    pointer-events:none;
+  }
+  .top-left-pill{
+    position:absolute;left:18px;top:18px;width:220px;height:86px;
+    background:linear-gradient(90deg,var(--lcars-orange),#ff8a3a);
+    border-top-right-radius:48px;border-bottom-right-radius:48px;
+    box-shadow:var(--accent-glow);
+  }
+  .topbar .title{
+    font-weight:700;font-size:20px;color:var(--panel);letter-spacing:1px;
+    background:linear-gradient(90deg,var(--lcars-pink),var(--lcars-gold));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    pointer-events:auto;
+  }
+  .topbar .sub{
+    margin-left:12px;font-size:12px;color:#bfc7d6;opacity:0.9;
+  }
 
-    /* Left LCARS Pillar */
-    .lcars-left {
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 180px;
-        height: 100%;
-        background: var(--lcars-orange);
-        border-top-right-radius: 90px;
-        border-bottom-right-radius: 90px;
-        padding-top: 40px;
-    }
+  /* ---------- Left Rail ---------- */
+  .left-rail{
+    position:absolute;left:18px;top:120px;width:220px;bottom:120px;
+    display:flex;flex-direction:column;gap:18px;padding:18px;
+    box-sizing:border-box;
+  }
+  .rail-pill{
+    height:72px;border-radius:36px 36px 36px 36px;background:var(--lcars-orange);
+    display:flex;align-items:center;padding:12px 18px;box-sizing:border-box;
+    box-shadow:var(--accent-glow);
+  }
+  .rail-pill .label{font-weight:700;color:#0b0b0b;font-size:14px}
+  .rail-seg{height:48px;border-radius:24px;background:var(--lcars-pink);display:flex;align-items:center;padding:8px 14px;color:#0b0b0b;font-weight:700}
+  .rail-small{height:36px;border-radius:18px;background:var(--lcars-blue);display:flex;align-items:center;padding:6px 12px;color:#0b0b0b;font-weight:700}
 
-    /* LCARS segmented bars */
-    .segment {
-        height: 60px;
-        margin: 20px 0;
-        border-top-right-radius: 30px;
-        border-bottom-right-radius: 30px;
-    }
+  /* ---------- Main Grid ---------- */
+  .main{
+    position:absolute;left:260px;right:18px;top:120px;bottom:120px;padding:28px;box-sizing:border-box;
+    display:grid;grid-template-columns: 1fr 420px;grid-template-rows: 1fr 220px;gap:22px;
+  }
 
-    .pink { background: var(--lcars-pink); }
-    .blue { background: var(--lcars-blue); }
-    .gold { background: var(--lcars-gold); }
+  /* Big central LCARS panel */
+  .panel{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:18px;padding:28px;box-sizing:border-box;position:relative;overflow:hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+  }
+  .panel::after{
+    content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, rgba(111,168,255,0.06), transparent 30%);
+    pointer-events:none;
+  }
 
-    /* Main content */
-    .content {
-        margin-left: 220px;
-        padding: 40px;
-        color: var(--lcars-gold);
-        font-size: 32px;
-        text-align: center;
-    }
+  /* Countdown display */
+  .countdown{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;
+    gap:12px;
+  }
+  .countdown .big{
+    font-family:var(--mono);font-size:84px;letter-spacing:2px;color:var(--lcars-blue);
+    text-shadow:0 6px 28px rgba(111,168,255,0.08);
+  }
+  .countdown .label{font-size:18px;color:var(--lcars-gold);font-weight:700;letter-spacing:1px}
 
-    #time {
-        margin-top: 40px;
-        font-size: 60px;
-        color: var(--lcars-blue);
-    }
+  /* Right column modules */
+  .modules{display:flex;flex-direction:column;gap:18px;height:100%}
+  .module{
+    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+    border-radius:12px;padding:16px;box-sizing:border-box;height:100%;
+  }
+  .module h3{margin:0;font-size:14px;color:var(--lcars-pink);letter-spacing:1px}
+  .module .value{font-family:var(--mono);font-size:28px;color:var(--lcars-gold);margin-top:8px}
 
-    h1 {
-        font-size: 48px;
-        color: var(--lcars-pink);
-        margin-bottom: 10px;
-    }
+  /* Bottom row panels */
+  .bottom-row{grid-column:1 / span 2;display:flex;gap:22px}
+  .info-card{flex:1;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));border-radius:12px;padding:18px;box-sizing:border-box;display:flex;flex-direction:row;gap:18px;align-items:center}
+  .info-card .left{width:140px;height:100%;display:flex;flex-direction:column;gap:8px}
+  .info-card .left .mini{height:44px;border-radius:10px;background:var(--lcars-blue);display:flex;align-items:center;justify-content:center;color:#071428;font-weight:800}
+  .info-card .right{flex:1}
+  .info-card .right p{margin:0;color:#cbd6e8}
+
+  /* LCARS buttons and indicators */
+  .btn-row{display:flex;gap:12px;margin-top:12px}
+  .lcars-btn{padding:10px 14px;border-radius:12px;background:var(--lcars-orange);color:#071428;font-weight:800;cursor:pointer;border:none;box-shadow:var(--accent-glow)}
+  .indicator{width:12px;height:12px;border-radius:50%;background:var(--lcars-teal);box-shadow:0 4px 12px rgba(102,224,214,0.18)}
+
+  /* small text */
+  .muted{color:#9aa7c7;font-size:13px}
+
+  /* responsive */
+  @media (max-width:1100px){
+    .main{grid-template-columns:1fr;grid-template-rows:1fr 220px 1fr}
+    .modules{flex-direction:row;overflow:auto}
+    .left-rail{display:none}
+    .topbar{padding-left:18px}
+  }
+
+  /* subtle animations */
+  @keyframes scan {
+    0%{transform:translateX(-30px);opacity:0}
+    50%{transform:translateX(0);opacity:1}
+    100%{transform:translateX(30px);opacity:0}
+  }
+  .scanline{position:absolute;left:0;right:0;height:1px;top:50%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.03),transparent);animation:scan 6s linear infinite;opacity:0.6;pointer-events:none}
 </style>
 </head>
-
 <body>
+  <div class="screen" role="application" aria-label="LCARS Shabbos Countdown">
 
-<!-- LCARS Left Rail -->
-<div class="lcars-left">
-    <div class="segment pink"></div>
-    <div class="segment blue"></div>
-    <div class="segment gold"></div>
-    <div class="segment pink"></div>
-</div>
+    <!-- left LCARS pill -->
+    <div class="top-left-pill" aria-hidden="true"></div>
 
-<!-- Main Display -->
-<div class="content">
-    <h1>SHABBOS COUNTDOWN</h1>
-    <div id="time">Loading…</div>
-</div>
+    <!-- top bar -->
+    <div class="topbar" aria-hidden="true">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="title">LCARS — SHABBOS SYSTEM</div>
+        <div class="sub muted">Teaneck, NJ • Halachic Candle‑lighting</div>
+      </div>
+    </div>
+
+    <!-- left rail modules -->
+    <div class="left-rail" aria-hidden="true">
+      <div class="rail-pill"><div class="label">OPS CORE</div></div>
+      <div class="rail-seg">COMM</div>
+      <div class="rail-small">SENSORS</div>
+      <div class="rail-small">LOG</div>
+      <div class="rail-small">SETTINGS</div>
+    </div>
+
+    <!-- main grid -->
+    <div class="main">
+
+      <!-- big countdown panel -->
+      <div class="panel" id="countdownPanel" role="region" aria-label="Shabbos countdown">
+        <div class="countdown" id="countdown">
+          <div class="label">CANDLE‑LIGHTING</div>
+          <div class="big" id="bigTime">—:—</div>
+          <div class="muted" id="subTime">Loading next Shabbos time…</div>
+          <div class="btn-row" style="margin-top:18px">
+            <button class="lcars-btn" id="refreshBtn" title="Refresh times">REFRESH</button>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="indicator" id="liveIndicator" title="Live"></div>
+              <div class="muted">LIVE</div>
+            </div>
+          </div>
+        </div>
+        <div class="scanline" aria-hidden="true"></div>
+      </div>
+
+      <!-- right column modules -->
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div class="module" id="clockModule" aria-live="polite">
+          <h3>LOCAL CLOCK</h3>
+          <div class="value" id="localClock">--:--:--</div>
+          <div class="muted" style="margin-top:8px" id="tzLabel">America/New_York</div>
+        </div>
+
+        <div class="module" id="zmanimModule" aria-live="polite">
+          <h3>SHABBOS TIMES</h3>
+          <div class="value" id="candleText">Candle‑lighting: —</div>
+          <div class="muted" id="havText" style="margin-top:8px">Havdalah: —</div>
+        </div>
+      </div>
+
+      <!-- bottom row -->
+      <div class="bottom-row" style="grid-column:1 / span 2">
+        <div class="info-card">
+          <div class="left">
+            <div class="mini">LCARS</div>
+            <div class="mini" style="background:var(--lcars-gold);color:#071428">TNG</div>
+          </div>
+          <div class="right">
+            <h3 style="color:var(--lcars-pink);margin:0">SYSTEM STATUS</h3>
+            <p class="muted" id="statusText">Connected to Hebcal • Geonameid 5105262 • Data refreshed daily</p>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="left">
+            <div class="mini" style="background:var(--lcars-blue);color:#071428">PARSHA</div>
+            <div class="mini" style="background:var(--lcars-pink);color:#071428">HEBREW DATE</div>
+          </div>
+          <div class="right">
+            <h3 style="color:var(--lcars-gold);margin:0" id="parshaName">—</h3>
+            <p class="muted" id="hebrewDate">—</p>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- main -->
+
+  </div> <!-- screen -->
 
 <script>
-async function updateCountdown() {
-    const now = new Date();
+/* ---------- Configuration ---------- */
+const GEOID = 5105262;            // Teaneck
+const HEBCAL_URL = `https://www.hebcal.com/shabbat?cfg=json&geonameid=${GEOID}&m=50`;
 
-    // Hebcal API for Teaneck (geonameid 5105262)
-    const url = "https://www.hebcal.com/shabbat?cfg=json&geonameid=5105262&m=50";
+/* ---------- State ---------- */
+let hebData = null;
+let candleDate = null;
+let havdalahDate = null;
 
-    const response = await fetch(url);
-    const data = await response.json();
-
-    // Find candle-lighting event
-    const candleEvent = data.items.find(item => item.category === "candles");
-
-    // Candle-lighting time
-    const candle = new Date(candleEvent.date);
-
-    // Time difference
-    const diffMs = candle - now;
-
-    if (diffMs <= 0) {
-        document.getElementById("time").innerText = "SHABBOS IS NOW";
-        return;
-    }
-
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffMinutes = Math.floor((diffMs / (1000 * 60)) % 60);
-
-    document.getElementById("time").innerText =
-        `${diffHours} HOURS  ${diffMinutes} MINUTES`;
+/* ---------- Helpers ---------- */
+function pad(n){return n.toString().padStart(2,'0')}
+function formatTime(d){
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+function formatClock(d){
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 }
 
-// Update every second
-setInterval(updateCountdown, 1000);
-updateCountdown();
-</script>
+/* ---------- Fetch Hebcal (cached daily) ---------- */
+async function fetchHebcal(force=false){
+  try{
+    const cached = localStorage.getItem('hebcal_cache');
+    if(!force && cached){
+      const obj = JSON.parse(cached);
+      const cachedDate = new Date(obj.fetchedAt);
+      const now = new Date();
+      // reuse if same day (local)
+      if(cachedDate.toDateString() === now.toDateString()){
+        hebData = obj.data;
+        applyHebcal(hebData);
+        return;
+      }
+    }
 
+    const resp = await fetch(HEBCAL_URL, {cache: "no-store"});
+    if(!resp.ok) throw new Error('Hebcal fetch failed');
+    const data = await resp.json();
+    hebData = data;
+    localStorage.setItem('hebcal_cache', JSON.stringify({fetchedAt:new Date().toISOString(), data}));
+    applyHebcal(data);
+  }catch(err){
+    console.error(err);
+    document.getElementById('statusText').innerText = 'Offline or Hebcal error • Using cached data if available';
+    const cached = localStorage.getItem('hebcal_cache');
+    if(cached){
+      const obj = JSON.parse(cached);
+      hebData = obj.data;
+      applyHebcal(hebData);
+    }
+  }
+}
+
+/* ---------- Apply Hebcal data to UI ---------- */
+function applyHebcal(data){
+  // find candle and havdalah items
+  const items = data.items || [];
+  const candleItem = items.find(i => i.category === 'candles');
+  const havItem = items.find(i => i.category === 'havdalah');
+  const parshaItem = items.find(i => i.category === 'parashat');
+  const hebDate = data.title || '';
+
+  if(candleItem) candleDate = new Date(candleItem.date);
+  if(havItem) havdalahDate = new Date(havItem.date);
+
+  document.getElementById('candleText').innerText = `Candle‑lighting: ${candleDate ? formatTime(candleDate) : '—'}`;
+  document.getElementById('havText').innerText = `Havdalah: ${havdalahDate ? formatTime(havdalahDate) : '—'}`;
+  document.getElementById('parshaName').innerText = parshaItem ? parshaItem.title : '—';
+  document.getElementById('hebrewDate').innerText = hebDate || '—';
+  document.getElementById('statusText').innerText = 'Connected to Hebcal • Data refreshed daily';
+}
+
+/* ---------- Countdown logic (updates every second) ---------- */
+function updateUI(){
+  const now = new Date();
+  // local clock
+  document.getElementById('localClock').innerText = formatClock(now);
+  document.getElementById('tzLabel').innerText = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  // countdown
+  if(!candleDate){
+    document.getElementById('bigTime').innerText = '--:--';
+    document.getElementById('subTime').innerText = 'No candle time available';
+    return;
+  }
+
+  const diffMs = candleDate - now;
+  if(diffMs <= 0){
+    document.getElementById('bigTime').innerText = 'SHABBOS';
+    document.getElementById('subTime').innerText = 'Shabbos has started';
+    document.getElementById('liveIndicator').style.background = '#ff6666';
+    return;
+  }
+
+  const hours = Math.floor(diffMs / (1000*60*60));
+  const minutes = Math.floor((diffMs / (1000*60)) % 60);
+  const seconds = Math.floor((diffMs / 1000) % 60);
+
+  document.getElementById('bigTime').innerText = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+  document.getElementById('subTime').innerText = `Candle‑lighting at ${formatTime(candleDate)}`;
+  document.getElementById('liveIndicator').style.background = '#66e0d6';
+}
+
+/* ---------- Manual refresh ---------- */
+document.getElementById('refreshBtn').addEventListener('click', ()=>{
+  document.getElementById('statusText').innerText = 'Refreshing…';
+  fetchHebcal(true);
+});
+
+/* ---------- Init ---------- */
+(async function init(){
+  await fetchHebcal(false);
+  updateUI();
+  // update every second
+  setInterval(updateUI, 1000);
+  // re-fetch at local midnight to get next day's hebcal
+  const now = new Date();
+  const msUntilMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1, 0,0,5) - now;
+  setTimeout(function dailyRefetch(){
+    fetchHebcal(true);
+    setInterval(()=>fetchHebcal(true), 24*60*60*1000);
+  }, msUntilMidnight);
+})();
+</script>
 </body>
 </html>
