@@ -431,5 +431,17 @@ document.getElementById('refreshBtn').addEventListener('click', ()=>{
 <audio id="sndWarp" src="tng_warp2_clean.mp3"></audio>
 <audio id="sndEmergency" src="alert01.mp3"></audio>
 </script>
+  document.getElementById("btnRedAlert").addEventListener("click", () => {
+    document.getElementById("sndRedAlert").play();
+});
+
+document.getElementById("btnWarp").addEventListener("click", () => {
+    document.getElementById("sndWarp").play();
+});
+
+document.getElementById("btnEmergency").addEventListener("click", () => {
+    document.getElementById("sndEmergency").play();
+});
+
 </body>
 </html>
