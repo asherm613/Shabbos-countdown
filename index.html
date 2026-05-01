@@ -207,7 +207,7 @@
             <!-- Horizontal row: big time + descriptive text -->
             <div class="big-row" role="status" aria-live="polite">
               <div class="big-time" id="bigTime">--:--:--</div>
-
+              <div class="big-sub" id="bigSub"></div>
             </div>
 
             <div class="sub" id="subTime">Loading next Shabbos time…</div>
@@ -399,7 +399,7 @@ function updateUI(){
 
   // horizontal display: "HH:MM:SS" and "in Xh Ym Zs" kept on one line
   document.getElementById('bigTime').innerText = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-  document.getElementById('bigSub').innerText = `in ${hours}h ${minutes}m ${seconds}s`;
+  
   document.getElementById('subTime').innerText = `Candle‑lighting at ${formatHM(candleDate)}`;
   document.getElementById('liveDot').style.background = 'var(--lcars-teal)';
 }
